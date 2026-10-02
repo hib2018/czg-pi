@@ -6,13 +6,13 @@
   "description": "A better customizable and git support commitizen adapter",
   "author": "Zhengqbbb <zhengqbbb@gmail.com> (https://github.com/Zhengqbbb)",
   "license": "MIT",
-  "homepage": "https://cz-git.qbb.sh",
+  "homepage": "https://github.com/hib2018/czg-pi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zhengqbbb/cz-git"
+    "url": "https://github.com/hib2018/czg-pi"
   },
   "bugs": {
-    "url": "https://github.com/Zhengqbbb/cz-git/issues"
+    "url": "https://github.com/hib2018/czg-pi/issues"
   },
   "keywords": [
     "commitizen-adapter",

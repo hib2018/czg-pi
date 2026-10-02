@@ -9,8 +9,7 @@ export function generateHelp(version: string, code = 0) {
     ${style.green('czg')} - Interactive Commitizen CLI that generate standardized git commit message
 
 ${style.yellow('WEBSITE:')}
-    ${style.underline('https://cz-git.qbb.sh/cli/')}
-    ${style.underline('https://github.com/Zhengqbbb/cz-git')}
+    ${style.underline('https://github.com/hib2018/czg-pi')}
 
 ${style.yellow('VERSION:')} ${version}
 

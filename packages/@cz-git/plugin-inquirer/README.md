@@ -1,20 +1,5 @@
-# @cz-git/inquirer
+# @cz-git/inquirer (czg-pi source)
 
-(WIP)
+Interactive prompts (`search-list`, `search-checkbox`, `complete-input`) inherited from [cz-git](https://github.com/Zhengqbbb/cz-git). This directory is maintained as part of [czg-pi](https://github.com/hib2018/czg-pi); it is not a separately published fork package.
 
-> provide cz-git's inquirer plugins, include **search-list, search-checkbox**, **complete-input**
-
-## demo
-```
-pnpm install
-pnpm run dev
-node ./packages/@cz-git/plugin-inquirer/examples/checkbox.js
-node ./packages/@cz-git/plugin-inquirer/examples/list.js
-node ./packages/@cz-git/plugin-inquirer/examples/input.js
-
-# or
-
-pnpm example:checkbox
-pnpm example:list
-pnpm example:input
-```
+Derived from cz-git by Qiubin Zheng and contributors. MIT; see [LICENSE](LICENSE).

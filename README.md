@@ -1,197 +1,40 @@
-<p align="center">
-    <a target="_blank" href="https://github.com/Zhengqbbb/cz-git">
-        <img src="https://user-images.githubusercontent.com/40693636/154064210-964aeaa0-d9dc-4cea-9e52-2ffc3789611b.png" alt="cz-git-logo" width="400" data-width="400" data-height="400">
-    </a>
-</p>
+# czg-pi
 
-<h1 align="center">cz-git</h1>
+[cz-git](https://github.com/Zhengqbbb/cz-git) をベースに、`czg ai` のコミット件名生成を [Pi SDK](https://www.npmjs.com/package/@earendil-works/pi-coding-agent) に切り替えた派生版です。Pi で設定済みのモデルと認証を利用するため、cz-git 用の OpenAI キーや Gateway は不要です。選択したクラウドモデルとの通信は発生し得ます。
 
-<p align="center">
-    <a target="_blank" href="https://github.com/commitizen/cz-cli#adapters">
-      <img style="display:inline-block;margin:0.2em;" alt="Commitizen-Adapter" src="https://img.shields.io/badge/Commitizen-Adapter-red.svg?logo=git&style=flat">
-    </a>
-    <a target="_blank" href="https://cz-git.qbb.sh/cli/">
-      <img style="display:inline-block;margin:0.2em;" alt="CLI-Link" src="https://img.shields.io/badge/Commitizen-CLI-red.svg?logo=git&style=flat">
-    </a>
-    <br/>
-    <a target="_blank" href="http://commitizen.github.io/cz-cli/">
-      <img style="display:inline-block;margin:0.2em;" alt="commitizen-friendly" src="https://img.shields.io/badge/Commitizen-friendly-brightgreen.svg?logo=github">
-    </a>
-    <a target="_blank" href="https://github.com/Zhengqbbb/cz-git">
-      <img style="display:inline-block;margin:0.2em;" alt="GitHub Repo stars" src="https://img.shields.io/github/stars/zhengqbbb/cz-git?style=social">
-    </a>
-    <a target="_blank" href="https://github.com/Zhengqbbb/cz-git/actions/workflows/nodejs.yml">
-      <img style="display:inline-block;margin:0.2em;" alt="test-ci" src="https://github.com/Zhengqbbb/cz-git/workflows/Node.js%20CI/badge.svg">
-    </a>
-    <br>
-    <a href="https://www.npmjs.com/package/cz-git">
-        <img style="display:inline-block;margin:0.2em;" alt="npm-download" src="https://img.shields.io/npm/dm/cz-git.svg?color=blue&style=flat-square&label=cz-git&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6IiBmaWxsPSIjY2IwMDAwIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTcgN2gyNnYyNmgtN1YxNGgtNnYxOUg3eiIvPjwvc3ZnPgo=">
-        <img style="display:inline-block;margin:0.2em;" alt="npm" src="https://img.shields.io/npm/v/cz-git?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6IiBmaWxsPSIjY2IwMDAwIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTcgN2gyNnYyNmgtN1YxNGgtNnYxOUg3eiIvPjwvc3ZnPgo=">
-    </a>
-    <a href="https://www.npmjs.com/package/czg">
-        <img style="display:inline-block;margin:0.2em;" alt="npm-download" src="https://img.shields.io/npm/dm/czg.svg?color=blue&style=flat-square&label=czg&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6IiBmaWxsPSIjY2IwMDAwIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTcgN2gyNnYyNmgtN1YxNGgtNnYxOUg3eiIvPjwvc3ZnPgo=">
-    </a>
-    <br/>
-    <a href="https://formulae.brew.sh/formula/czg">
-        <img style="display:inline-block;margin:0.2em;" alt="homebrew" src="https://img.shields.io/homebrew/v/czg?style=flat-square&logo=homebrew&label=homebrew-czg">
-    </a>
-</p>
+**上流の公式リリースではありません。** npm の `czg` / `cz-git` パッケージや上流サイトは、この派生版の配布物ではありません。
 
-<p align="center">
-    <a href="https://github.com/Zhengqbbb/cz-git">GitHub</a>
-    &nbsp; | &nbsp;
-    <a href="https://cz-git.qbb.sh/guide/">Installation</a>
-    &nbsp; | &nbsp;
-    <a href="https://cz-git.qbb.sh">Website</a>
-    &nbsp; | &nbsp;
-    <a href="https://cz-git.qbb.sh/cli/">CLI</a>
-    <br/>
-    <a href="https://cz-git.qbb.sh/zh/">简体中文文档</a>
-</p>
+## 必要なもの
 
-## Introduction
+- Node.js 22.19 以降、pnpm 10.33.2
+- Pi 側で設定済みのモデルと認証
+- Git
 
-DX first and more engineered, lightweight, customizable, standard output format [Commitizen adapter](https://cz-git.qbb.sh/guide/introduction) and [Git commit CLI](https://cz-git.qbb.sh/cli/).
+## ローカルでビルド
 
-![demo-gif](https://user-images.githubusercontent.com/40693636/188255006-b9df9837-4678-4085-9395-e2905d7ec7de.gif)
-
-> **What is commitizen**: A Node.js-based `git commit` command-line tool that assists in generating standardized commit messages. <br><br>
-> **What is an adapter**: Replace the **interactive** plugin for the commitizen command line tool.
-
-## Feature
-
-- 💪 Just to be a **lazy man** !!! Friendly command line tool, Supports **search and selection** on the command line, reducing spelling errors.
-- ⚡️ **Lightweight**, **Highly Customizable**, but the output format follows the standard [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
-- 🔨 [Better for monorepo engineering](https://cz-git.qbb.sh/recipes/#scopes) and **commitlint** project to give relevant verification information to the command line.
-- ✅ Support commit with **emoji** ｜ Better linking with [issuePrefix](https://cz-git.qbb.sh/recipes/default-issues.html) **for issue**
-- 🤖 **OpenAI support.** Let the AI generate your git commit message.
-
-[⇒ Why cz-git](https://cz-git.qbb.sh/guide/why.html)
-
-```bash
-$ npm i -D cz-git
-+ cz-git          (1.76 MB)
-added 1 package in 0.552s
+```sh
+git clone https://github.com/hib2018/czg-pi.git
+cd czg-pi
+corepack pnpm install
+corepack pnpm build
 ```
 
-[⇒ Why czg](https://cz-git.qbb.sh/cli/why.html)
-```bash
-$ npm i -g czg
-+ czg             (1.32 MB)
-added 1 package in 0.531s
+コミットしたいリポジトリに移動し、変更をステージしてから実行します。
+
+```sh
+cd /path/to/your/repository
+git add <files>
+node /path/to/czg-pi/packages/cli/bin/index.js ai
+# 候補を最大3件生成する場合
+node /path/to/czg-pi/packages/cli/bin/index.js ai -N=3
 ```
 
-## Projects using cz-git
+Pi に渡すのはステージ済み差分の先頭最大 7,800 文字です。生成用セッションではツール・拡張・セッション保存を無効にしています。差分がない場合や生成に失敗した場合は通常の手入力に戻ります。差分がないリポジトリでは、手入力できても通常の空コミットはできません（意図して空コミットする場合は Git の `--allow-empty` を使用）。
 
-<table>
-  <tr>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/nrwl/nx">
-        <img src="https://user-images.githubusercontent.com/40693636/211251507-e45992b8-6e49-44e4-933c-100a68f5ff48.png" alt="Nx logo" width="40"><br>
-        <sub>Nx</sub>
-      </a>
-    </td>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/element-plus/element-plus">
-        <img src="https://user-images.githubusercontent.com/40693636/172459748-939e3f1b-a694-4c09-b643-e1dce602105c.png" alt="Element Plus logo" width="40"><br>
-        <sub>Element Plus</sub>
-      </a>
-    </td>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/vueComponent/ant-design-vue">
-        <img src="https://user-images.githubusercontent.com/40693636/175873226-45eebf9c-280f-4201-a3d1-4ab259f5a6ad.png" alt="Ant Design Vue logo" width="40"><br>
-        <sub>Ant Design Vue</sub>
-      </a>
-    </td>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/Tencent/tdesign-vue-next">
-        <img src="https://user-images.githubusercontent.com/40693636/170830562-38e4c998-9af4-4303-9270-4f14e0942b08.png" alt="TDesign-Vue-Next logo" width="40"><br>
-        <sub>TDesign-Vue-Next</sub>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/vbenjs/vue-vben-admin">
-        <img src="https://user-images.githubusercontent.com/40693636/178189964-931a1fc2-92df-4d04-8d0d-b748fc318c0a.png" alt="Vben-Admin logo" width="40"><br>
-        <sub>Vben-Admin</sub>
-      </a>
-    </td>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/HalseySpicy/Geeker-Admin">
-        <img src="https://cdn.jsdelivr.net/gh/Zhengqbbb/Zhengqbbb@v1.1.9/image/geeker-avatar.png" alt="Geeker-Admin logo" width="40"><br>
-        <sub>Geeker-Admin</sub>
-      </a>
-    </td>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/instructure/instructure-ui">
-        <img src="https://avatars.githubusercontent.com/u/515326?s=200&v=4" alt="instructure-ui logo" width="40"><br>
-        <sub>instructure-ui</sub>
-      </a>
-    </td>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/IDuxFE/idux">
-        <img src="https://user-images.githubusercontent.com/40693636/171067486-56f50e23-a40b-4353-9c99-6fef702c9b4b.png" alt="iDux logo" width="40"><br>
-        <sub>iDux</sub>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="200px">
-      <a target="_blank" href="https://github.com/Renovamen/vuepress-theme-gungnir">
-        <img src="https://user-images.githubusercontent.com/40693636/170830637-0d465b52-6204-4bbd-872f-fb6f27f1ed50.png" alt="Vuepress-Theme-Gungnir logo" width="40"><br>
-        <sub>Vuepress-Theme-Gungnir</sub>
-      </a>
-    </td>
-  </tr>
-</table>
+生成文は既存の画面で選択・編集できます。内容を確認し、**Yes** を選んだ場合だけコミットします。AI 自体はコミットしません。`ai` を付けなければ通常の対話フローです。詳しくは [AI の使い方](docs/cli/ai.md) を参照してください。
 
+## 出典とライセンス
 
-## Get Started
+このリポジトリには Qiubin Zheng 氏と貢献者による cz-git のソースと文書が含まれています。著作権・許諾表示は [MIT ライセンス](LICENSE) と各パッケージの `LICENSE` に維持しています。この派生版の変更も MIT で配布します。上流作者による承認・後援を示すものではありません。
 
-> 「cz-git & czg」 require Node >=**v12.20**
-
-- `cz-git` + [`Commitizen`](https://github.com/commitizen/cz-cli) [⇒ Get Started](https://cz-git.qbb.sh/guide/)
-- `czg` [⇒ Get Started](https://cz-git.qbb.sh/cli/install)
-
-## Configure Template
-
-[⇒ Configure Template](https://cz-git.qbb.sh/config/)
-
-## Options
-
-[⇒ Show Related](https://cz-git.qbb.sh/config/show.html)
-
-[⇒ Engineering Related](https://cz-git.qbb.sh/config/engineer.html)
-
-## Recipes
-
-[⇒ Recipes](https://cz-git.qbb.sh/recipes/)
-
-## FAQ
-
-[⇒ FAQ](https://cz-git.qbb.sh/faq/)
-
-<a target="_blank" href="https://packagephobia.com/result?p=cz-git,czg">
-  <img src="https://cdn.jsdelivr.net/gh/Zhengqbbb/Zhengqbbb@v1.1.8/image/cz-git-v1.11.0.png" alt="size-overview"><br>
-  <sub>https://packagephobia.com/result?p=cz-git,czg</sub>
-</a>
-
-## LICENSE
-
-MIT Copyright (c) 2022-present Qiubin Zheng <zhengqbbb@gmail.com> (https://github.com/Zhengqbbb)
-
-<p align="center">
-    <table>
-        <tbody>
-        <td align="center">
-            <br>
-            I just try my best to make thing well.<br>
-            Could you give a star ⭐ to encourage me 🤗
-            <br>
-            If possible, can to be my <a href="https://github.com/sponsors/Zhengqbbb">💖 Sponsor 💖</a> to support my work
-            <img width="800" height="0" />
-        </td>
-        </tbody>
-    </table>
-</p>
+`docs/` 内の一部は上流由来の既存文書です。旧 OpenAI 設定の記述は、この派生版の `czg ai` には適用されません。

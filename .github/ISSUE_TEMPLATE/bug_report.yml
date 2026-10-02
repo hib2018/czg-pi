@@ -3,7 +3,7 @@ description: 🐞 Create a report to help us improve
 title: "[Bug report]"
 labels:
   - bug
-assignees: Zhengqbbb
+assignees: ''
 body:
   - type: checkboxes
     id: checklist
@@ -14,7 +14,7 @@ body:
         - label: I am using the **latest version**
           required: true
 
-        - label: I have searched [FAQ](https://cz-git.qbb.sh/faq/)
+        - label: I have searched existing issues in this repository
           required: true
 
   - type: textarea
