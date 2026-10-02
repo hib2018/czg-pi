@@ -13,6 +13,8 @@ const baseConfig: Options = {
     dts: true,
     clean: true,
     bundle: true,
+    external: ['@earendil-works/pi-coding-agent'],
+    target: 'node22',
     minify: false,
     sourcemap: false,
     splitting: false,

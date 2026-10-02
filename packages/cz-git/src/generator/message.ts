@@ -17,7 +17,7 @@ import {
     wrap,
 } from '../shared'
 import type { Answers, CommitizenGitOptions, GenerateAIPromptType } from '../shared'
-import { fetchOpenAIMessage } from './api'
+import { generatePiSubjects } from './pi'
 
 /** @get if using alias return alias message */
 export function getAliasMessage(config: CommitizenGitOptions, alias?: string) {
@@ -212,11 +212,13 @@ export async function generateAISubjects(
     options: CommitizenGitOptions,
 ) {
     const diffIgnore = options.aiDiffIgnore?.map(i => `:(exclude)${i}`) || []
-    const diffOpts = process.env.CZ_ALL_CHANGE_MODE === '1'
-        ? ['HEAD']
-        : ['--cached', '.']
-    // Accounting for GPT-3's input req of 4k tokens (approx 8k chars)
-    const diff = spawnSync('git', ['diff', ...diffOpts, ...diffIgnore], { encoding: 'utf8' }).stdout.trim().slice(0, 7800)
+    // AI always sees only staged changes, regardless of git commit -a.
+    const result = spawnSync('git', ['diff', '--cached', '.', ...diffIgnore], { encoding: 'utf8' })
+    if (result.error || result.status !== 0)
+        throw new Error('Unable to read staged diff')
+    const diff = result.stdout.trim().slice(0, 7800)
+    if (!diff)
+        return []
 
     const maxSubjectLength = getMaxSubjectLength(answers.type, options.defaultScope, options)
     let prompt
@@ -238,6 +240,6 @@ export async function generateAISubjects(
             diff,
         })
     }
-    return await fetchOpenAIMessage(options, prompt)
+    return await generatePiSubjects(options, prompt)
 }
 // #endregion

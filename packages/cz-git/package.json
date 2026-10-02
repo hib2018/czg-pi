@@ -47,7 +47,7 @@
     "lib"
   ],
   "engines": {
-    "node": ">=v12.20.0"
+    "node": ">=22.19.0"
   },
   "scripts": {
     "build": "tsup",
@@ -60,5 +60,8 @@
     "https-proxy-agent": "5.0.1",
     "node-fetch-cjs": "3.3.2",
     "rimraf": "catalog:rimraf"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "1.0.0"
   }
 }

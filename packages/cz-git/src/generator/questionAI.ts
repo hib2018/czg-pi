@@ -14,13 +14,23 @@ import {
     resolveListItemPinTop,
 } from '../shared'
 import { generateAISubjects } from './message'
+import { generateQuestions } from './question'
 
 export async function generateAIPrompt(options: CommitizenGitOptions, cz: CommitizenType) {
     const answers = await cz.prompt(generateAITypesQuestions(options))
     console.log(style.green('ℹ'), style.bold(options.messages!.generatingByAI!))
-    const subjects = await generateAISubjects(answers, options)
-    if (!Array.isArray(subjects))
-        throw new Error('subjects fetch value failed')
+    let subjects: string[]
+    try {
+        subjects = await generateAISubjects(answers, options)
+    }
+    catch {
+        // Do not print provider errors: they may include credentials or the diff.
+        subjects = []
+    }
+    if (!subjects.length) {
+        console.log(style.yellow('No AI subjects available; enter a message manually.'))
+        return cz.prompt(generateQuestions(options, cz))
+    }
 
     if (subjects.length === 1) {
         answers.subject = subjects[0]

@@ -1,33 +1,13 @@
-# czg ai
+# czg ai (Pi SDK)
 
-Let the AI generate your **git commit message** subject <sup>(short description)</sup>
+This fork uses your existing Pi model and authentication. Requires Node.js 22.19+ and a configured Pi installation; no additional OpenAI key or gateway is needed. Pi may contact your selected cloud model.
 
-![demo-gif](https://user-images.githubusercontent.com/40693636/219867044-3ca9823d-9294-4e02-9a5b-624578844168.gif) <!-- size=720x309 -->
-
-## Synopsis
-
-**`czg ai`** - Turn on OpenAI generate subject mode
-
-:::info Preparation
-Get your OpenAI API Key: https://platform.openai.com/account/api-keys<br>
 ```sh
-czg --api-key=sk-xxxxx
+git add <files>
+czg ai                 # one suggested subject
+czg ai -N=3            # choose among up to three subjects
 ```
-:::
 
-## Options
+Only the staged diff is sent to Pi (up to 7,800 characters). The AI session has no tools, extensions, or saved transcript. If there is no staged diff or generation fails, the usual manual questions appear. Generated subjects use the existing selection and edit/confirmation prompts; review or edit the message before choosing **Yes**. No commit is made by the AI itself. Even if `skipQuestions` contains `confirmCommit`, AI mode still requires confirmation.
 
-| Shorthand, Name | Description |
-| --- | --- |
-|  `-N=<number>`<br>`--ai-num=<number>` | Sets AI return multiple subjects and Turn on choose mode |
-| `-M=<model>`<br>`--ai-model=<model>` | Sets AI model in this session |
-| `--no-ai` | Turn off AI prompt mode in this session |
-| `--api-key=<token>` | Setup OpenAI API secret key to local (.config/.czrc) |
-| `--api-model=<model>` | Setup request OpenAI API model to local (.config/.czrc) |
-| `--api-proxy=<proxy_URL>` | Setup request OpenAI API proxy to local (.config/.czrc)<br>e.g:<br> 1. `npx czg --api-proxy="socks5://127.0.0.1:1080"`<br>2. `npx czg --api-proxy="http://127.0.0.1:1080"`  |
-| `--api-endpoint=<url>` | Setup request OpenAI API endpoint to local<br>Default `"https://api.openai.com/v1"`  |
-| `--unset-proxy` | Unset request API proxy on local configure |
-
-:::tip
-more information and usage [⇒ see the recipes](/recipes/openai)
-:::
+The old OpenAI API configuration and `-M` / `--ai-model` settings do not control Pi in this fork. Choose a model and authenticate using Pi's own configuration before running `czg ai`.

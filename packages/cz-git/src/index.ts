@@ -48,7 +48,7 @@ export function prompter(
 
 async function generateConfirmPrompt(options: CommitizenGitOptions, cz: CommitizenType, answers: Answers) {
     const result = answers
-    if (options.skipQuestions?.includes('confirmCommit')) {
+    if (!options.useAI && options.skipQuestions?.includes('confirmCommit')) {
         previewMessage(
             generateMessage(answers, options, options.confirmColorize),
             options.confirmColorize,

@@ -18,7 +18,7 @@ ${style.yellow('SYNOPSIS:')}
     czg [subcommand...] [options...] [git-commit-options...]
 
 ${style.yellow('SUBCOMMAND:')}
-    ${style.cyan('ai')}               ${style.red('Turn on OpenAI generate subject mode')}
+    ${style.cyan('ai')}               ${style.red('Generate subject with Pi (Node.js 22.19+)')}
     ${style.cyan('break')}            ${style.red('Turn on appends a ! after the type/scope')}
     ${style.cyan('emoji')}            ${style.red('Turn on output message with emoji mode')}
     ${style.cyan('checkbox')}         ${style.red('Turn on scope checkbox mode')}
@@ -28,21 +28,12 @@ ${style.yellow('OPTIONS:')}
     ${style.cyan(':, --alias=')}      ${style.red('Directly submit the defined commit message')}
     ${style.cyan('--config=')}        ${style.red('Specify the configuration file to use')}
 
-  ${style.gray('OpenAI:')}
-    ${style.cyan('-N=,--ai-num=')}    ${style.red('Sets AI return multiple subjects and Turn on choose mode')}
-    ${style.cyan('-M=,--ai-model=')}  ${style.red('Sets AI model in this session')}
-                     ${style.gray('[default: "gpt-4o-mini"]')}
-                     ${style.gray('[example: "gpt-3.5-turbo", "gpt-4o", "gpt-4o-mini" ...]')}
-    ${style.cyan('--api-key=')}       ${style.red('Setup request OpenAI API secret key to local (.config/.czrc)')}
-    ${style.cyan('--api-model=')}     ${style.red('Setup request OpenAI API model      to local (.config/.czrc)')}
-    ${style.cyan('--api-proxy=')}     ${style.red('Setup request OpenAI API proxy      to local (.config/.czrc)')}
-    ${style.cyan('--api-endpoint=')}  ${style.red('Setup request OpenAI API endpoint   to local (.config/.czrc)')}
-                     ${style.gray('[default: "https://api.openai.com/v1"]')}
+  ${style.gray('Pi AI (uses the model and authentication configured in Pi):')}
+    ${style.cyan('-N=,--ai-num=')}    ${style.red('Request up to N subjects (maximum 10) and choose one')}
 
 ${style.yellow('FLAG:')}
     ${style.cyan('-r, --retry')}      ${style.red('Directly retry submit by the last message')}
     ${style.cyan('--no-ai')}          ${style.red('Turn off AI prompt mode in this session')}
-    ${style.cyan('--unset-proxy')}    ${style.red('Unset request API proxy on local configure')}
     ${style.cyan('-h, --help')}       ${style.red('Show help')}
     ${style.cyan('-v, --version')}    ${style.red('Show version')}
 
@@ -51,8 +42,7 @@ ${style.yellow('EXAMPLES:')}
     ${style.cyan('czg emoji')}
     ${style.cyan('czg :fd')}
     ${style.cyan('czg --config="./config/cz.json"')}
-    ${style.cyan('czg --api-key="sk-XXXXX"')}
-    ${style.cyan('czg ai -N=3 -M="gpt-4o"')}
+    ${style.cyan('git add <files> && czg ai -N=3')}
 
 Extends 'git commit' options.
 See 'git commit --help' for more information. `,
