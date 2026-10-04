@@ -4,71 +4,40 @@
  * @license MIT
  */
 
-import process from 'node:process'
 import { fuzzyFilter, style } from '@cz-git/inquirer'
 import type { CommitizenGitOptions, CommitizenType } from '../shared'
-import {
-    isString,
-    log,
-    parseStandardScopes,
-    resolveListItemPinTop,
-} from '../shared'
+import { isString, parseStandardScopes } from '../shared'
 import { generateAISubjects } from './message'
 import { generateQuestions } from './question'
 
 export async function generateAIPrompt(options: CommitizenGitOptions, cz: CommitizenType) {
-    const answers = await cz.prompt(generateAITypesQuestions(options))
     console.log(style.green('ℹ'), style.bold(options.messages!.generatingByAI!))
     let subjects: string[]
     try {
-        subjects = await generateAISubjects(answers, options)
+        subjects = await generateAISubjects({}, options)
     }
     catch {
         // Do not print provider errors: they may include credentials or the diff.
         subjects = []
     }
-    if (!subjects.length) {
+    const allowedTypes = new Set(options.types?.concat(options.typesAppend || []).map(t => t.value))
+    const candidates = subjects.filter((s) => {
+        const match = /^([^:()\s]+): .+$/.exec(s)
+        return !!match && allowedTypes.has(match[1]!)
+    })
+    if (!candidates.length) {
         console.log(style.yellow('No AI subjects available; enter a message manually.'))
         return cz.prompt(generateQuestions(options, cz))
     }
 
-    if (subjects.length === 1) {
-        answers.subject = subjects[0]
-    }
-    else {
-        const { subject } = await cz.prompt(generateAISubjectsQuestions(options, subjects))
-        answers.subject = subject
-    }
-
+    const selected = candidates.length === 1
+        ? candidates[0]!
+        : (await cz.prompt(generateAISubjectsQuestions(options, candidates))).subject!
+    const [, type, subject] = /^([^:()\s]+): (.+)$/.exec(selected)!
+    const answers = { type, subject }
     if (isString(options.defaultScope) && options.defaultScope)
-        answers.scope = options.defaultScope
+        Object.assign(answers, { scope: options.defaultScope })
     return answers
-}
-
-function generateAITypesQuestions(options: CommitizenGitOptions) {
-    if (!Array.isArray(options.types) || options.types.length === 0) {
-        if (!process.env.VITEST)
-            log('err', 'Error [types] Option')
-        return false
-    }
-    return [
-        {
-            type: 'search-list',
-            name: 'type',
-            message: options.messages?.type,
-            themeColorCode: options?.themeColorCode,
-            source: (_: unknown, input: string) => {
-                const typeSource = resolveListItemPinTop(
-                    options.types?.concat(options.typesAppend || []) || [],
-                    options.defaultType,
-                )
-                const searchTarget = options.typesSearchValue
-                    ? 'value'
-                    : 'name'
-                return fuzzyFilter(input, typeSource, searchTarget)
-            },
-        },
-    ]
 }
 
 function generateAISubjectsQuestions(options: CommitizenGitOptions, subjects: string[]) {

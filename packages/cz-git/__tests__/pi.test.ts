@@ -27,13 +27,13 @@ vi.mock('@earendil-works/pi-coding-agent', () => ({
 beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(spawnSync).mockReturnValue({ stdout: 'staged diff', status: 0 } as any)
-    session.getLastAssistantText.mockReturnValue('1. add staged feature\n2. fix staged bug')
+    session.getLastAssistantText.mockReturnValue('1. feat: add staged feature\n2. fix: fix staged bug')
 })
 
 describe('Pi subject generation', () => {
     it('sends only the staged diff and reuses the normal candidate flow', async () => {
-        const options = { aiNumber: 2 } as any
-        expect(await generateAISubjects({ type: 'feat' }, options)).toEqual(['add staged feature', 'fix staged bug'])
+        const options = { aiNumber: 2, types: [{ value: 'feat' }, { value: 'fix' }] } as any
+        expect(await generateAISubjects({}, options)).toEqual(['feat: add staged feature', 'fix: fix staged bug'])
         expect(spawnSync).toHaveBeenCalledWith('git', ['diff', '--cached', '.'], { encoding: 'utf8' })
         expect(prompt.mock.calls[0][0]).toContain('staged diff')
         expect(createAgentSession).toHaveBeenCalledWith(expect.objectContaining({ noTools: 'all', sessionManager: 'memory' }))
@@ -43,7 +43,7 @@ describe('Pi subject generation', () => {
 
     it('does not open Pi if there is no staged diff', async () => {
         vi.mocked(spawnSync).mockReturnValue({ stdout: '', status: 0 } as any)
-        expect(await generateAISubjects({ type: 'feat' }, {})).toEqual([])
+        expect(await generateAISubjects({}, {})).toEqual([])
         expect(createAgentSession).not.toHaveBeenCalled()
     })
 
@@ -53,14 +53,55 @@ describe('Pi subject generation', () => {
         expect(dispose).toHaveBeenCalledOnce()
     })
 
+    it('generates the type without asking and selects complete headers', async () => {
+        const options = { aiNumber: 2, types: [{ value: 'feat' }, { value: 'fix' }], messages: {}, defaultScope: 'cli' } as any
+        const cz = { prompt: vi.fn().mockResolvedValue({ subject: 'fix: fix staged bug' }) }
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+        try {
+            expect(await generateAIPrompt(options, cz as any)).toEqual({ type: 'fix', subject: 'fix staged bug', scope: 'cli' })
+            expect(cz.prompt).toHaveBeenCalledTimes(1)
+        }
+        finally {
+            log.mockRestore()
+        }
+    })
+
+    it('accepts a single allowed type without any selection and ignores invalid candidates', async () => {
+        session.getLastAssistantText.mockReturnValue('docs: update guide\ninvalid: ignore this')
+        const cz = { prompt: vi.fn() }
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+        try {
+            expect(await generateAIPrompt({ types: [{ value: 'docs' }], messages: {} } as any, cz as any))
+                .toEqual({ type: 'docs', subject: 'update guide' })
+            expect(cz.prompt).not.toHaveBeenCalled()
+        }
+        finally {
+            log.mockRestore()
+        }
+    })
+
+    it('falls back to manual questions for unsupported or malformed types', async () => {
+        session.getLastAssistantText.mockReturnValue('unknown: do something\njust a subject')
+        const cz = { prompt: vi.fn().mockResolvedValue({ type: 'feat', subject: 'manual' }) }
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+        try {
+            expect(await generateAIPrompt({ types: [{ value: 'feat' }], messages: {} } as any, cz as any))
+                .toEqual({ type: 'feat', subject: 'manual' })
+            expect(cz.prompt).toHaveBeenCalledTimes(1)
+        }
+        finally {
+            log.mockRestore()
+        }
+    })
+
     it('falls back to manual questions on generation failure', async () => {
         createAgentSession.mockRejectedValueOnce(new Error('private provider error'))
-        const cz = { prompt: vi.fn().mockResolvedValueOnce({ type: 'feat' }).mockResolvedValueOnce({ type: 'feat', subject: 'manual' }) }
+        const cz = { prompt: vi.fn().mockResolvedValueOnce({ type: 'feat', subject: 'manual' }) }
         const log = vi.spyOn(console, 'log').mockImplementation(() => {})
         try {
             expect(await generateAIPrompt({ types: [{ name: 'feat', value: 'feat' }], messages: {} } as any, cz as any))
                 .toEqual({ type: 'feat', subject: 'manual' })
-            expect(cz.prompt).toHaveBeenCalledTimes(2)
+            expect(cz.prompt).toHaveBeenCalledTimes(1)
             expect(log.mock.calls.flat().join(' ')).not.toContain('private provider error')
         }
         finally {

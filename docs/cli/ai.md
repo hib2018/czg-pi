@@ -8,6 +8,6 @@ czg ai                 # one suggested subject
 czg ai -N=3            # choose among up to three subjects
 ```
 
-Only the staged diff is sent to Pi (up to 7,800 characters). The AI session has no tools, extensions, or saved transcript. If there is no staged diff or generation fails, the usual manual questions appear. Generated subjects use the existing selection and edit/confirmation prompts; review or edit the message before choosing **Yes**. No commit is made by the AI itself. Even if `skipQuestions` contains `confirmCommit`, AI mode still requires confirmation.
+Only the staged diff is sent to Pi (up to 7,800 characters). The AI session has no tools, extensions, or saved transcript. If there is no staged diff or generation fails, the usual manual questions appear. Pi generates a Conventional Commit type and subject together (for example, `feat: add search`), so there is no type-selection question. Only configured types are accepted. Generated headers use the existing selection and edit/confirmation prompts; review or edit the message before choosing **Yes**. No commit is made by the AI itself. Even if `skipQuestions` contains `confirmCommit`, AI mode still requires confirmation.
 
 The old OpenAI API configuration and `-M` / `--ai-model` settings do not control Pi in this fork. Choose a model and authenticate using Pi's own configuration before running `czg ai`.
